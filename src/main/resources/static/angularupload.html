@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script>
+</head>
+<body ng-app="app" ng-controller="myCtrl">
+	<h2>angularjs图片上传和回显</h2>
+	<input type="file" id="fileinput" name="file">
+	<button ng-click="upload()">上传</button>
+	<img ng-hide="hideImg" width="200px" height="100px" ng-attr-src="{{filelocation}}">
+	<span>{{success}}</span>
+	<script type="text/javascript">
+		var app = angular.module('app', []);
+		app.controller('myCtrl', function($scope, $http) {
+			$scope.hideImg=true;
+			$scope.filelocation="";
+			$scope.upload = function() {
+				var fd = new FormData();
+				var file = document.getElementById("fileinput").files[0];
+				fd.append("file", file);
+				$http({
+					url:"/fileupload/upload",
+					method:"POST",
+					data:fd,
+					headers:{"Content-Type":undefined},
+					transformRequest:angular.identity
+				}).success(function(msg){
+					console.log(msg);
+					$scope.hideImg=false;
+					$scope.filelocation=msg.filelocation;
+				}).error(function(msg){
+					console.log(msg);
+					$scope.success="上传失败";
+				});
+			};
+
+		});
+	</script>
+</body>
+</html>

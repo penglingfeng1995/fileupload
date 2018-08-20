@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://cdn.bootcss.com/vue/2.3.4/vue.js"></script>
+<script src="https://cdn.bootcss.com/axios/0.16.2/axios.js"></script>
+</head>
+<body>
+	<div id="app">
+		<input type="file" @change="upload($event)"> 
+		<img v-if="showImg" :src="filelocation" width="200px" height="100px">
+	</div>
+</body>
+<script>
+	var app=new Vue({
+		el : '#app',
+		data : {
+			showImg:false,
+			filelocation:"",
+		},
+		methods:{
+			upload(event){
+				var file=event.target.files[0];
+				var fd=new FormData();
+				fd.append("file",file);
+				var config={headers:{"Content-Type":"multipart/form-data"}};
+				axios.post("/fileupload/upload",fd,config).then(function(msg){
+					console.log(msg);
+					app.showImg=true;
+					app.filelocation=msg.data.filelocation;
+				});
+			},
+		}
+	})
+</script>
+</html>
